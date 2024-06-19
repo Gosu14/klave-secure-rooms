@@ -2060,6 +2060,22 @@
     argparse "~1.0.9"
     string-argv "~0.3.1"
 
+"@secretarium/connector@^0.17.0":
+  version "0.17.0"
+  resolved "https://registry.yarnpkg.com/@secretarium/connector/-/connector-0.17.0.tgz#a03ddcf9e94aa4fbb580f2f53f9b627b700adc2e"
+  integrity sha512-x/yDGBps+iKGc6lcYbZPuKT84ZmK2Cs1nxPjEiODPA98IanLXVV4MUsUhvn3+uWxPRTeQEJs5TFjxauvRlSj8w==
+  dependencies:
+    "@secretarium/crypto" "~0.2.0"
+    "@total-typescript/ts-reset" "0.5.1"
+    ws "8.16.0"
+
+"@secretarium/crypto@~0.2.0":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@secretarium/crypto/-/crypto-0.2.1.tgz#c3bd42f727daf6e8b99f145ae1cf5e9521867a3e"
+  integrity sha512-MNRT8Im7AifrqJVignpjBqfbON3e+FJO+FKd6j7c51Ozfu53WvYuA+my1fP0SLzTVgo15jDCzRZ54tWKJBWYWg==
+  dependencies:
+    js-base64 "3.7.7"
+
 "@sinclair/typebox@^0.27.8":
   version "0.27.8"
   resolved "https://registry.yarnpkg.com/@sinclair/typebox/-/typebox-0.27.8.tgz#6667fac16c436b5434a387a34dedb013198f6e6e"
@@ -2357,6 +2373,11 @@
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-2.0.0.tgz#f544a148d3ab35801c1f633a7441fd87c2e484bf"
   integrity sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==
+
+"@total-typescript/ts-reset@0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@total-typescript/ts-reset/-/ts-reset-0.5.1.tgz#93b0535d00faa588518bcfb0db30182e63e4f7af"
+  integrity sha512-AqlrT8YA1o7Ff5wPfMOL0pvL+1X+sw60NN6CcOCqs658emD6RfiXhF7Gu9QcfKBH7ELY2nInLhKSCWVoNL70MQ==
 
 "@trysound/sax@0.2.0":
   version "0.2.0"
@@ -5842,6 +5863,11 @@ jju@~1.4.0:
   resolved "https://registry.yarnpkg.com/jju/-/jju-1.4.0.tgz#a3abe2718af241a2b2904f84a625970f389ae32a"
   integrity sha512-8wb9Yw966OSxApiCt0K3yNJL8pnNeIv+OEq2YMidz4FKP6nonSRoOXc80iXY4JaN2FC11B9qsNmDsm+ZOfMROA==
 
+js-base64@3.7.7:
+  version "3.7.7"
+  resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-3.7.7.tgz#e51b84bf78fbf5702b9541e2cb7bfcb893b43e79"
+  integrity sha512-7rCnleh0z2CkXhH67J8K1Ytz0b2Y+yxTPL+/KOJoa20hfnVQ/3/T6W/KflYI4bRHRagNeXeU2bkNGI3v1oS/lw==
+
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
@@ -8447,6 +8473,11 @@ write-file-atomic@^4.0.2:
   dependencies:
     imurmurhash "^0.1.4"
     signal-exit "^3.0.7"
+
+ws@8.16.0:
+  version "8.16.0"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.16.0.tgz#d1cd774f36fbc07165066a60e40323eab6446fd4"
+  integrity sha512-HS0c//TP7Ina87TfiPUz1rQzMhHrl/SG2guqRcTOIUYD2q8uhUdNHZYJUaQ8aTGPzCh+c6oawMKW35nFl1dxyQ==
 
 ws@^8.11.0, ws@^8.13.0:
   version "8.17.1"
