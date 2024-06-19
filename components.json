@@ -1,0 +1,15 @@
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "new-york",
+  "rsc": false,
+  "tailwind": {
+    "config": "libs/ui-kit/util/src/tailwind/tailwind.config.js",
+    "css": "libs/ui-kit/util/src/styles/global.css",
+    "baseColor": "slate",
+    "cssVariables": true
+  },
+  "aliases": {
+    "components": "@klave-secure-rooms/ui-kit/ui/lib",
+    "utils": "@klave-secure-rooms/ui-kit/util"
+  }
+}

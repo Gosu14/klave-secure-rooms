@@ -14,7 +14,12 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@klave-secure-rooms/ui-kit/ui": ["libs/ui-kit/ui/src/index.ts"],
+      "@klave-secure-rooms/ui-kit/util": ["libs/ui-kit/util/src/index.ts"],
+      "@klave-secure-rooms/ui-kit/ui/*": ["libs/ui-kit/ui/src/*"],
+      "@klave-secure-rooms/ui-kit/util/*": ["libs/ui-kit/util/src/*"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
