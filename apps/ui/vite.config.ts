@@ -21,12 +21,6 @@ export default defineConfig({
 
     plugins: [react(), nxViteTsPaths()],
 
-    resolve: {
-        alias: {
-            '@': path.resolve(__dirname, './src')
-        }
-    },
-
     // Uncomment this if you are using workers.
     // worker: {
     //  plugins: [ nxViteTsPaths() ],

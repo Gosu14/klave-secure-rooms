@@ -1,5 +1,5 @@
-import secretariumHandler from '@/utils/secretarium-handler';
-import { TransactionResult, TokenIdentityResult, FileUploadTokenResult, ListDataRoomsResult } from '@/utils/types';
+import secretariumHandler from './secretarium-handler';
+import { TransactionResult, TokenIdentityResult, FileUploadTokenResult, ListDataRoomsResult } from './types';
 
 export const klaveContract = import.meta.env.VITE_APP_KLAVE_CONTRACT;
 

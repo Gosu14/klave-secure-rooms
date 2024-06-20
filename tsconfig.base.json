@@ -1,25 +1,25 @@
 {
-  "compileOnSave": false,
-  "compilerOptions": {
-    "rootDir": ".",
-    "sourceMap": true,
-    "declaration": false,
-    "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "importHelpers": true,
-    "target": "es2015",
-    "module": "esnext",
-    "lib": ["es2020", "dom"],
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
-    "baseUrl": ".",
-    "paths": {
-      "@klave-secure-rooms/ui-kit/ui": ["libs/ui-kit/ui/src/index.ts"],
-      "@klave-secure-rooms/ui-kit/util": ["libs/ui-kit/util/src/index.ts"],
-      "@klave-secure-rooms/ui-kit/ui/*": ["libs/ui-kit/ui/src/*"],
-      "@klave-secure-rooms/ui-kit/util/*": ["libs/ui-kit/util/src/*"]
-    }
-  },
-  "exclude": ["node_modules", "tmp"]
+    "compileOnSave": false,
+    "compilerOptions": {
+        "rootDir": ".",
+        "sourceMap": true,
+        "declaration": false,
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "importHelpers": true,
+        "target": "es2015",
+        "module": "esnext",
+        "lib": ["es2020", "dom"],
+        "skipLibCheck": true,
+        "skipDefaultLibCheck": true,
+        "baseUrl": ".",
+        "paths": {
+            "@klave-secure-rooms/ui-kit/ui": ["libs/ui-kit/ui/src/index"],
+            "@klave-secure-rooms/ui-kit/util": ["libs/ui-kit/util/src/index.ts"],
+            "@klave-secure-rooms/ui-kit/ui/*": ["libs/ui-kit/ui/src/*"],
+            "@klave-secure-rooms/ui-kit/util/*": ["libs/ui-kit/util/src/*"]
+        }
+    },
+    "exclude": ["node_modules", "tmp"]
 }

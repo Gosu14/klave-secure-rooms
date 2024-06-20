@@ -1,9 +1,9 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
-import { Home } from '@/pages/home';
-import { ErrorPage } from '@/pages/error-page';
-import { RootLayout } from '@/layouts/root-layout';
-import secretariumHandler from '@/utils/secretarium-handler';
+import { Home } from './pages/home';
+import { ErrorPage } from './pages/error-page';
+import { RootLayout } from './layouts/root-layout';
+import secretariumHandler from './utils/secretarium-handler';
 
 secretariumHandler.initialize();
 

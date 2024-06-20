@@ -6,7 +6,7 @@ import {
     Transaction,
     Utils
 } from '@secretarium/connector';
-import { KeyPair } from '@/utils/types';
+import { KeyPair } from './types';
 
 interface SecretariumGatewayConfig {
     gateways: Array<{
