@@ -1,5 +1,11 @@
 import secretariumHandler from './secretarium-handler';
-import { TransactionResult, TokenIdentityResult, FileUploadTokenResult, ListDataRoomsResult } from './types';
+import {
+    TransactionResult,
+    TokenIdentityResult,
+    FileUploadTokenResult,
+    ListDataRoomsResult,
+    DataRoomContentResult
+} from './types';
 
 export const klaveContract = import.meta.env.VITE_APP_KLAVE_CONTRACT;
 
@@ -144,6 +150,29 @@ export const getFileUploadToken = async (): Promise<FileUploadTokenResult> =>
 export const listDataRooms = async (): Promise<ListDataRoomsResult> =>
     waitForConnection()
         .then(() => secretariumHandler.request(klaveContract, 'listDataRooms', {}, `listDataRooms-${Math.random()}`))
+        .then(
+            (tx) =>
+                new Promise((resolve, reject) => {
+                    tx.onResult((result) => {
+                        resolve(result);
+                    });
+                    tx.onError((error) => {
+                        reject(error);
+                    });
+                    tx.send().catch(reject);
+                })
+        );
+
+export const getDataRoomContent = async (dataRoomId: string): Promise<DataRoomContentResult> =>
+    waitForConnection()
+        .then(() =>
+            secretariumHandler.request(
+                klaveContract,
+                'getDataRoomContent',
+                { dataRoomId },
+                `getDataRoomContent-${Math.random()}`
+            )
+        )
         .then(
             (tx) =>
                 new Promise((resolve, reject) => {
