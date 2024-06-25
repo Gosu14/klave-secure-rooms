@@ -5,35 +5,19 @@ export type KeyPair = EncryptedKeyPair & {
     name: string;
 };
 
-export type TransactionResult =
-    | {
-          success: true;
-          message: string;
-      }
-    | {
-          success: false;
-          exception: string;
-      };
+export type TransactionResult = {
+    success: boolean;
+    message: string;
+};
 
-export type TokenIdentityResult =
-    | {
-          success: true;
-          identity: string;
-      }
-    | {
-          success: false;
-          exception: string;
-      };
-
-export type FileUploadTokenResult =
-    | {
-          success: true;
-          token: string;
-      }
-    | {
-          success: false;
-          exception: string;
-      };
+export type TokenIdentityResult = {
+    requestId: string;
+    result: {
+        backendPublicKey: string;
+        webserverPublicKey: string;
+    };
+    message?: string;
+};
 
 export type ListDataRoomsResult = {
     requestId: string;
@@ -46,9 +30,9 @@ export type DataRoomContentResult = {
     result: {
         locked: boolean;
         files: DataRoomFile[];
-    }
+    };
     message?: string;
-}
+};
 
 export type DataRoomFile = {
     digestB64: string;
@@ -57,4 +41,28 @@ export type DataRoomFile = {
     key: string;
     tokenB64: string;
     type: string;
+};
+
+export type GetFileUploadTokenResult = {
+    requestId: string;
+    result: {
+        tokenB64: string;
+    };
 }
+
+export type GetFileUploadTokenInput = {
+    dataRoomId: string;
+    digestB64: string;
+};
+
+export type UpdateDataRoomInput = {
+    dataRoomId: string;
+    operation: string;
+    file: {
+        name: string;
+        digestB64: string;
+        type: string;
+        key: string;
+        tokenB64: string;
+    };
+};
