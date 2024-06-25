@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 
 export const ErrorPage = () => {
     const error = useRouteError();
-
+    console.error(error);
     return (
         <>
             <Helmet>
