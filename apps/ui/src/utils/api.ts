@@ -2,9 +2,11 @@ import secretariumHandler from './secretarium-handler';
 import {
     TransactionResult,
     TokenIdentityResult,
-    FileUploadTokenResult,
     ListDataRoomsResult,
-    DataRoomContentResult
+    DataRoomContentResult,
+    GetFileUploadTokenInput,
+    GetFileUploadTokenResult,
+    UpdateDataRoomInput
 } from './types';
 
 export const klaveContract = import.meta.env.VITE_APP_KLAVE_CONTRACT;
@@ -19,7 +21,7 @@ export const waitForConnection = () =>
         loopCondition();
     });
 
-export const setTokenIdentity = async (token: string): Promise<TransactionResult> =>
+export const setTokenIdentity = async (token?: string): Promise<TransactionResult> =>
     waitForConnection()
         .then(() =>
             secretariumHandler.request(
@@ -42,14 +44,14 @@ export const setTokenIdentity = async (token: string): Promise<TransactionResult
                 })
         );
 
-export const setWebServerIdentity = async (spkiPublicKey: string): Promise<TransactionResult> =>
+export const setWebServerTokenIdentity = async (spkiPublicKey: string): Promise<TransactionResult> =>
     waitForConnection()
         .then(() =>
             secretariumHandler.request(
                 klaveContract,
-                'setWebServerIdentity',
+                'setWebServerTokenIdentity',
                 { spkiPublicKey },
-                `setWebServerIdentity-${Math.random()}`
+                `setWebServerTokenIdentity-${Math.random()}`
             )
         )
         .then(
@@ -88,15 +90,10 @@ export const createDataRoom = async (dataRoomId: string): Promise<TransactionRes
                 })
         );
 
-export const updateDataRoom = async (dataRoomId: string): Promise<TransactionResult> =>
+export const updateDataRoom = async (input: UpdateDataRoomInput): Promise<TransactionResult> =>
     waitForConnection()
         .then(() =>
-            secretariumHandler.request(
-                klaveContract,
-                'updateDataRoom',
-                { dataRoomId },
-                `updateDataRoom-${Math.random()}`
-            )
+            secretariumHandler.request(klaveContract, 'updateDataRoom', input, `updateDataRoom-${Math.random()}`)
         )
         .then(
             (tx) =>
@@ -129,10 +126,17 @@ export const getTokenIdentity = async (): Promise<TokenIdentityResult> =>
                 })
         );
 
-export const getFileUploadToken = async (): Promise<FileUploadTokenResult> =>
+export const getFileUploadToken = async (
+    getFileUploadTokenInput: GetFileUploadTokenInput
+): Promise<GetFileUploadTokenResult> =>
     waitForConnection()
         .then(() =>
-            secretariumHandler.request(klaveContract, 'getFileUploadToken', {}, `getFileUploadToken-${Math.random()}`)
+            secretariumHandler.request(
+                klaveContract,
+                'getFileUploadToken',
+                getFileUploadTokenInput,
+                `getFileUploadToken-${Math.random()}`
+            )
         )
         .then(
             (tx) =>
@@ -173,6 +177,173 @@ export const getDataRoomContent = async (dataRoomId: string): Promise<DataRoomCo
                 `getDataRoomContent-${Math.random()}`
             )
         )
+        .then(
+            (tx) =>
+                new Promise((resolve, reject) => {
+                    tx.onResult((result) => {
+                        resolve(result);
+                    });
+                    tx.onError((error) => {
+                        reject(error);
+                    });
+                    tx.send().catch(reject);
+                })
+        );
+
+// -------------------- MOCK WEB SERVER --------------------
+
+const mock_web_server_klave_contract = 'test_sdk_smart_contract';
+
+const rmPemDecorators = (pemFile: string, type: string) => {
+    pemFile = pemFile.replace('-----BEGIN ' + type + ' KEY-----', '');
+    pemFile = pemFile.replace('-----END ' + type + ' KEY-----', '');
+    pemFile = pemFile.replace(/\n/g, '');
+    pemFile = pemFile.replace(/\r/g, '');
+    return pemFile;
+};
+
+export const importPrivateKey = async (pem: string): Promise<TransactionResult> =>
+    waitForConnection()
+        .then(() => {
+            const pemContents = rmPemDecorators(pem, 'EC PRIVATE');
+            const importKeyInput = {
+                keyName: 'webServerPrivateKey',
+                key: {
+                    format: 'sec1',
+                    keyData: pemContents,
+                    algorithm: 'secp256r1',
+                    extractable: true,
+                    usages: ['sign']
+                }
+            };
+
+            return secretariumHandler.request(
+                mock_web_server_klave_contract,
+                'importKey',
+                importKeyInput,
+                `importKey-${Math.random()}`
+            );
+        })
+        .then(
+            (tx) =>
+                new Promise((resolve, reject) => {
+                    tx.onResult((result) => {
+                        resolve(result);
+                    });
+                    tx.onError((error) => {
+                        reject(error);
+                    });
+                    tx.send().catch(reject);
+                })
+        );
+
+export const getPublicKey = async (keyName: string): Promise<TransactionResult> =>
+    waitForConnection()
+        .then(() => {
+            const getPublicKeyInput = {
+                keyName: keyName,
+                format: 'spki'
+            };
+
+            return secretariumHandler.request(
+                mock_web_server_klave_contract,
+                'getPublicKey',
+                getPublicKeyInput,
+                `getPublicKey-${Math.random()}`
+            );
+        })
+        .then(
+            (tx) =>
+                new Promise((resolve, reject) => {
+                    tx.onResult((result) => {
+                        resolve(result);
+                    });
+                    tx.onError((error) => {
+                        reject(error);
+                    });
+                    tx.send().catch(reject);
+                })
+        );
+
+export const importPublicKey = async (pem: string): Promise<TransactionResult> =>
+    waitForConnection()
+        .then(() => {
+            const pemContents = rmPemDecorators(pem, 'PUBLIC');
+            const importKeyInput = {
+                keyName: 'backendPublicKey',
+                key: {
+                    format: 'spki',
+                    keyData: pemContents,
+                    algorithm: 'secp256r1',
+                    extractable: true,
+                    usages: ['verify']
+                }
+            };
+
+            return secretariumHandler.request(
+                mock_web_server_klave_contract,
+                'importKey',
+                importKeyInput,
+                `importKey-${Math.random()}`
+            );
+        })
+        .then(
+            (tx) =>
+                new Promise((resolve, reject) => {
+                    tx.onResult((result) => {
+                        resolve(result);
+                    });
+                    tx.onError((error) => {
+                        reject(error);
+                    });
+                    tx.send().catch(reject);
+                })
+        );
+
+export const sign = async (keyName: string, clearText: string): Promise<TransactionResult> =>
+    waitForConnection()
+        .then(() => {
+            const signInput = {
+                keyName: keyName,
+                clearText: clearText
+            };
+
+            return secretariumHandler.request(
+                mock_web_server_klave_contract,
+                'sign',
+                signInput,
+                `sign-${Math.random()}`
+            );
+        })
+        .then(
+            (tx) =>
+                new Promise((resolve, reject) => {
+                    tx.onResult((result) => {
+                        resolve(result);
+                    });
+                    tx.onError((error) => {
+                        reject(error);
+                    });
+                    tx.send().catch(reject);
+                })
+        );
+
+export const verify = async (keyName: string, clearText: string, signatureB64: string): Promise<TransactionResult> =>
+    waitForConnection()
+        .then(() => {
+            const verifyInput = {
+                keyName: keyName,
+                clearText: clearText,
+                signatureB64: signatureB64
+            };
+
+            return secretariumHandler.request(
+                mock_web_server_klave_contract,
+                'verify',
+                verifyInput,
+                `verify-${Math.random()}`
+            );
+        })
         .then(
             (tx) =>
                 new Promise((resolve, reject) => {
