@@ -13,7 +13,7 @@ export const loader = async () => {
     }
 
     const res = await listDataRooms();
-    console.log(res);
+
     if (res.message === 'No dataroom found in the list of dataRooms') {
         return {
             result: []
@@ -28,15 +28,12 @@ export const loader = async () => {
 export const Admin = () => {
     const navigate = useNavigate();
     const { result } = useLoaderData() as ListDataRoomsResult;
-    console.log(result);
+
     const handleCreateDataRoom = async () => {
-        const result = await createDataRoom().catch((error) => {
+        await createDataRoom().catch((error) => {
             console.log(error);
             return error;
         });
-
-        console.log(result);
-
         navigate('/admin/data-rooms');
     };
 

@@ -11,7 +11,8 @@ import {
     ApproveUserRequestInput,
     SetIdentitiesInput,
     ExportWebServerPrivateKeyInput,
-    GetUserContentResult
+    GetUserContentResult,
+    ListUserRequestsResult
 } from './types';
 
 export const klaveContract = import.meta.env.VITE_APP_KLAVE_CONTRACT;
@@ -80,7 +81,7 @@ export const getUser = async (): Promise<GetUserContentResult> =>
                 })
         );
 
-export const listUsers = async (): Promise<TransactionResult> =>
+export const listUsers = async (): Promise<ListUserRequestsResult> =>
     waitForConnection()
         .then(() => secretariumHandler.request(klaveContract, 'listUserRequests', {}, `listUsers-${Math.random()}`))
         .then(

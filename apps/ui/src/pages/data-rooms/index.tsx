@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet-async';
-import { LoaderFunction, NavLink, redirect, useLoaderData, useParams } from 'react-router-dom';
+import { LoaderFunction, NavLink, redirect, useLoaderData } from 'react-router-dom';
 import { isConnected, listDataRooms } from '../../utils/api';
 import { idToUrl, urlToId } from '../../utils/helpers';
 import { ListDataRoomsResult } from '../../utils/types';
@@ -21,7 +21,7 @@ export const loader: LoaderFunction = async () => {
 
 export const DataRooms = () => {
     const { result } = useLoaderData() as ListDataRoomsResult;
-    console.log(result);
+
     return (
         <>
             <Helmet>

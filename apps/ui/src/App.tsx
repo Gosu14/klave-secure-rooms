@@ -13,7 +13,7 @@ import { SignIn, action as SignUserIn } from './pages/auth/keyname';
 import { CreateSuperAdmin, action as CreateSAdmin } from './pages/auth/create-super-admin';
 import { AdminLayout } from './layouts/admin-layout';
 import { Admin, loader as AdminLoader } from './pages/admin';
-import { Users } from './pages/admin/users';
+import { Users, loader as UsersLoader } from './pages/admin/users';
 import { Keys } from './pages/admin/keys';
 
 secretariumHandler.initialize();
@@ -86,7 +86,8 @@ const router = createBrowserRouter([
             },
             {
                 path: 'users',
-                element: <Users />
+                element: <Users />,
+                loader: UsersLoader
             },
             {
                 path: 'keys',

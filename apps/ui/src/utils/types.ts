@@ -24,6 +24,12 @@ export type TokenIdentityResult = {
     message?: string;
 };
 
+export type ListUserRequestsResult = {
+    requestId: string;
+    result: string[];
+    message?: string;
+};
+
 export type ListDataRoomsResult = {
     requestId: string;
     result: string[];
