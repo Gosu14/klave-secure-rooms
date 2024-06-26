@@ -1,7 +1,7 @@
 import { ClearKeyPair, EncryptedKeyPairV2, Key, SCP, Transaction, Utils } from '@secretarium/connector';
+import { KeyPair } from '../utils/types';
 
 interface SecretariumGatewayConfig {
-    key: string;
     gateways: Array<{
         endpoint: string;
         name: string;
@@ -34,11 +34,10 @@ const handlerStore: {
 const gatewaysConfigReducer = (config: SecretariumClusterConfig, current: string): SecretariumClusterConfig => {
     const record = current.split('#');
 
-    if (record.length !== 4) return config;
+    if (record.length !== 3) return config;
 
-    const [cluster, name, endpoint, key] = record as [string, string, string, string];
+    const [cluster, name, endpoint] = record as [string, string, string];
     config[cluster] = {
-        key,
         gateways: (config[cluster]?.gateways ?? []).concat([
             {
                 endpoint,
@@ -58,14 +57,13 @@ const printClusterInfo = (): void => {
 
     Object.entries(handlerStore.clusters).forEach(([name, configuration], cindex) => {
         printableConfig[`c${cindex}_name`] = name;
-        printableConfig[`c${cindex}_key`] = configuration.key;
         configuration.gateways.forEach((gateway, gindex) => {
             printableConfig[`c${cindex}_g${gindex}_name`] = gateway.name;
             printableConfig[`c${cindex}_g${gindex}_endpoint`] = gateway.endpoint;
         });
     });
 
-    console.info('SDRA now using the following cluster configuration:');
+    console.info('Klave Data Rooms App now using the following cluster configuration:');
     console.table(printableConfig);
 };
 
@@ -88,7 +86,7 @@ const secretariumHandler = {
                 if (config.SECRETARIUM_GATEWAYS) clusterConfigBase = config.SECRETARIUM_GATEWAYS;
                 if (config.DK_SERVICES) handlerStore.fileService = config.DK_SERVICES;
                 processClusterConfig(clusterConfigBase);
-                console.info('SDRA now using config.json overrides');
+                console.info('Klave Data Rooms App now using config.json overrides');
             })
             .catch(() => {
                 processClusterConfig(clusterConfigBase);
@@ -103,7 +101,7 @@ const secretariumHandler = {
                     key.exportEncryptedKey().then((key) => {
                         resolve({
                             ...key,
-                            name: key.name ?? values.email
+                            name: values.name
                         });
                     });
                 })
@@ -122,7 +120,7 @@ const secretariumHandler = {
         Key.importKey(keyPair)
             .then((key) => key.seal(password))
             .then((encKey) => encKey.exportEncryptedKey()),
-    use: (keyPair: EncryptedKeyPairV2, password: string): Promise<ClearKeyPair> => {
+    use: (keyPair: KeyPair, password: string): Promise<ClearKeyPair> => {
         return new Promise((resolve, reject) => {
             Key.importEncryptedKeyPair(keyPair, password)
                 .then((key) => {
@@ -159,10 +157,10 @@ const secretariumHandler = {
             currentGateway = nextGateway;
             const endpoint = cluster[1].gateways?.[nextGateway]?.endpoint;
             if (cluster && endpoint && handlerStore.currentKey) {
-                console.info('SDRA now using the following gateway:', endpoint);
+                console.info('Klave Data Rooms App now using the following gateway:', endpoint);
                 handlerStore.currentConnection
                     .reset()
-                    .connect(endpoint, handlerStore.currentKey, secretariumHandler.utils.fromBase64(cluster[1].key))
+                    .connect(endpoint, handlerStore.currentKey)
                     .then(() => {
                         resolve({
                             cluster: cluster[0],

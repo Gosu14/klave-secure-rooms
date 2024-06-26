@@ -6,10 +6,17 @@ import {
     DataRoomContentResult,
     GetFileUploadTokenInput,
     GetFileUploadTokenResult,
-    UpdateDataRoomInput
+    UpdateDataRoomInput,
+    UserRequestInput,
+    ApproveUserRequestInput,
+    SetIdentitiesInput,
+    ExportWebServerPrivateKeyInput,
+    GetUserContentResult
 } from './types';
 
 export const klaveContract = import.meta.env.VITE_APP_KLAVE_CONTRACT;
+
+export const isConnected = () => secretariumHandler.isConnected();
 
 export const waitForConnection = () =>
     new Promise<void>((resolve) => {
@@ -20,6 +27,131 @@ export const waitForConnection = () =>
         };
         loopCondition();
     });
+
+export const createSuperAdmin = async (): Promise<TransactionResult> =>
+    waitForConnection()
+        .then(() =>
+            secretariumHandler.request(klaveContract, 'createSuperAdmin', {}, `createSuperAdmin-${Math.random()}`)
+        )
+        .then(
+            (tx) =>
+                new Promise((resolve, reject) => {
+                    tx.onResult((result) => {
+                        resolve(result);
+                    });
+                    tx.onError((error) => {
+                        reject(error);
+                    });
+                    tx.send().catch(reject);
+                })
+        );
+
+export const createUser = async (input: UserRequestInput): Promise<TransactionResult> =>
+    waitForConnection()
+        .then(() =>
+            secretariumHandler.request(klaveContract, 'createUserRequest', input, `createUser-${Math.random()}`)
+        )
+        .then(
+            (tx) =>
+                new Promise((resolve, reject) => {
+                    tx.onResult((result) => {
+                        resolve(result);
+                    });
+                    tx.onError((error) => {
+                        reject(error);
+                    });
+                    tx.send().catch(reject);
+                })
+        );
+
+export const getUser = async (): Promise<GetUserContentResult> =>
+    waitForConnection()
+        .then(() => secretariumHandler.request(klaveContract, 'getUserContent', {}, `getUser-${Math.random()}`))
+        .then(
+            (tx) =>
+                new Promise((resolve, reject) => {
+                    tx.onResult((result) => {
+                        resolve(result);
+                    });
+                    tx.onError((error) => {
+                        reject(error);
+                    });
+                    tx.send().catch(reject);
+                })
+        );
+
+export const listUsers = async (): Promise<TransactionResult> =>
+    waitForConnection()
+        .then(() => secretariumHandler.request(klaveContract, 'listUserRequests', {}, `listUsers-${Math.random()}`))
+        .then(
+            (tx) =>
+                new Promise((resolve, reject) => {
+                    tx.onResult((result) => {
+                        resolve(result);
+                    });
+                    tx.onError((error) => {
+                        reject(error);
+                    });
+                    tx.send().catch(reject);
+                })
+        );
+
+export const approveUser = async (input: ApproveUserRequestInput): Promise<TransactionResult> =>
+    waitForConnection()
+        .then(() => secretariumHandler.request(klaveContract, 'approveUser', input, `approveUser-${Math.random()}`))
+        .then(
+            (tx) =>
+                new Promise((resolve, reject) => {
+                    tx.onResult((result) => {
+                        resolve(result);
+                    });
+                    tx.onError((error) => {
+                        reject(error);
+                    });
+                    tx.send().catch(reject);
+                })
+        );
+
+export const resetIdentities = async (input: SetIdentitiesInput): Promise<TransactionResult> =>
+    waitForConnection()
+        .then(() =>
+            secretariumHandler.request(klaveContract, 'resetIdentities', input, `resetIdentities-${Math.random()}`)
+        )
+        .then(
+            (tx) =>
+                new Promise((resolve, reject) => {
+                    tx.onResult((result) => {
+                        resolve(result);
+                    });
+                    tx.onError((error) => {
+                        reject(error);
+                    });
+                    tx.send().catch(reject);
+                })
+        );
+
+export const exportWebServerIdentity = async (input: ExportWebServerPrivateKeyInput): Promise<TransactionResult> =>
+    waitForConnection()
+        .then(() =>
+            secretariumHandler.request(
+                klaveContract,
+                'exportWebServerIdentity',
+                input,
+                `exportWebServerIdentity-${Math.random()}`
+            )
+        )
+        .then(
+            (tx) =>
+                new Promise((resolve, reject) => {
+                    tx.onResult((result) => {
+                        resolve(result);
+                    });
+                    tx.onError((error) => {
+                        reject(error);
+                    });
+                    tx.send().catch(reject);
+                })
+        );
 
 export const setTokenIdentity = async (token?: string): Promise<TransactionResult> =>
     waitForConnection()
@@ -67,13 +199,13 @@ export const setWebServerTokenIdentity = async (spkiPublicKey: string): Promise<
                 })
         );
 
-export const createDataRoom = async (dataRoomId: string): Promise<TransactionResult> =>
+export const createDataRoom = async (): Promise<TransactionResult> =>
     waitForConnection()
         .then(() =>
             secretariumHandler.request(
                 klaveContract,
                 'createDataRoom',
-                { dataRoomId },
+                { dataRoomId: '' },
                 `createDataRoom-${Math.random()}`
             )
         )

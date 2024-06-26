@@ -2,48 +2,21 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { Home, loader as HomeLoader } from './pages/home';
 import { DataRoom, loader as DataRoomLoader } from './pages/data-rooms/id';
+import { DataRooms, loader as DataRoomsLoader } from './pages/data-rooms';
 import { ErrorPage } from './pages/error-page';
 import { RootLayout } from './layouts/root-layout';
 import secretariumHandler from './utils/secretarium-handler';
-import { EncryptedKeyPairV2, Key, Utils } from '@secretarium/connector';
+import { AuthLayout } from './layouts/auth-layout';
+import { Auth } from './pages/auth';
+import { Register, action as CreateUser } from './pages/auth/register';
+import { SignIn, action as SignUserIn } from './pages/auth/keyname';
+import { CreateSuperAdmin, action as CreateSAdmin } from './pages/auth/create-super-admin';
+import { AdminLayout } from './layouts/admin-layout';
+import { Admin, loader as AdminLoader } from './pages/admin';
+import { Users } from './pages/admin/users';
+import { Keys } from './pages/admin/keys';
 
-// TODO : This is for demo purpose only, do not use this in production
-const ENC_PWD = 'demoKlave';
-const LOC_KEY = 'demo:portalEncKey';
-
-(window as any).secretariumHandler = secretariumHandler;
 secretariumHandler.initialize();
-
-const existingKey = window.localStorage.getItem(LOC_KEY);
-if (existingKey) {
-    const parsedKey: EncryptedKeyPairV2 = JSON.parse(existingKey);
-    secretariumHandler
-        .use(parsedKey, ENC_PWD)
-        .then(Key.importKey)
-        .then((key) => key.getRawPublicKey())
-        .then((rawPublicKey) => Utils.hash(rawPublicKey))
-        .then((hashPublicKey) => {
-            (window as any).currentDevicePublicKeyHash = Utils.toBase64(hashPublicKey, true);
-            return secretariumHandler.connect();
-        })
-        .catch(console.error);
-} else {
-    secretariumHandler
-        .createKeyPair({
-            password: ENC_PWD
-        })
-        .then((encKey) => {
-            window.localStorage.setItem(LOC_KEY, JSON.stringify(encKey));
-            return Key.importEncryptedKeyPair(encKey, ENC_PWD);
-        })
-        .then((key) => key.getRawPublicKey())
-        .then((rawPublicKey) => Utils.hash(rawPublicKey))
-        .then((hashPublicKey) => {
-            (window as any).currentDevicePublicKeyHash = Utils.toBase64(hashPublicKey, true);
-            return secretariumHandler.connect();
-        })
-        .catch(console.error);
-}
 
 const router = createBrowserRouter([
     {
@@ -62,15 +35,71 @@ const router = createBrowserRouter([
                 loader: DataRoomLoader
             }
         ]
+    },
+    {
+        path: '/auth',
+        element: <AuthLayout />,
+        errorElement: <ErrorPage />,
+        children: [
+            {
+                index: true,
+                element: <Auth />
+            },
+            {
+                path: 'create-super-admin',
+                element: <CreateSuperAdmin />,
+                action: CreateSAdmin
+            },
+            {
+                path: 'register',
+                element: <Register />,
+                action: CreateUser
+            },
+            {
+                path: ':keyname',
+                element: <SignIn />,
+                action: SignUserIn
+            }
+        ]
+    },
+    {
+        path: '/admin',
+        element: <AdminLayout />,
+        errorElement: <ErrorPage />,
+        children: [
+            {
+                index: true,
+                element: <Admin />,
+                loader: AdminLoader
+            },
+            {
+                path: 'data-rooms',
+                element: <DataRooms />,
+                loader: DataRoomsLoader,
+                children: [
+                    {
+                        path: ':dataRoomId',
+                        element: <DataRoom />,
+                        loader: DataRoomLoader
+                    }
+                ]
+            },
+            {
+                path: 'users',
+                element: <Users />
+            },
+            {
+                path: 'keys',
+                element: <Keys />
+            }
+        ]
     }
 ]);
 
-const App = () => {
+export default function App() {
     return (
         <HelmetProvider>
             <RouterProvider router={router} />
         </HelmetProvider>
     );
-};
-
-export default App;
+}

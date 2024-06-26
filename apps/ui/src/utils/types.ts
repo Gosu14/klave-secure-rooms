@@ -5,6 +5,11 @@ export type KeyPair = EncryptedKeyPair & {
     name: string;
 };
 
+export type ActionData = {
+    error: boolean;
+    message?: string;
+};
+
 export type TransactionResult = {
     success: boolean;
     message: string;
@@ -48,7 +53,20 @@ export type GetFileUploadTokenResult = {
     result: {
         tokenB64: string;
     };
-}
+};
+
+export type DataRoomRole = {
+    dataRoomId: string;
+    role: string;
+};
+
+export type GetUserContentResult = {
+    requestId: string;
+    result: {
+        id: string;
+        roles: DataRoomRole[];
+    };
+};
 
 export type GetFileUploadTokenInput = {
     dataRoomId: string;
@@ -65,4 +83,22 @@ export type UpdateDataRoomInput = {
         key: string;
         tokenB64: string;
     };
+};
+
+export type UserRequestInput = {
+    dataRoomId: string;
+    role: string;
+};
+
+export type ApproveUserRequestInput = {
+    userRequestId: string;
+};
+
+export type SetIdentitiesInput = {
+    resetBackend: boolean;
+    resetWebServer: boolean;
+};
+
+export type ExportWebServerPrivateKeyInput = {
+    format: string;
 };

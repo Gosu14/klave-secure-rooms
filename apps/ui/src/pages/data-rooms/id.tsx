@@ -1,17 +1,23 @@
 import { Helmet } from 'react-helmet-async';
-import { LoaderFunction, useLoaderData, useParams } from 'react-router-dom';
-import { getDataRoomContent } from '../../utils/api';
+import { LoaderFunction, redirect, useLoaderData, useParams } from 'react-router-dom';
+import { getDataRoomContent, isConnected } from '../../utils/api';
 import { urlToId } from '../../utils/helpers';
 import { DataRoomContentResult } from '../../utils/types';
 import { LockOpen, Lock, File } from 'lucide-react';
 
 export const loader: LoaderFunction = async ({ params }) => {
+    const isConnectedState = isConnected();
+
+    if (!isConnectedState) {
+        return redirect('/auth');
+    }
+
     const { dataRoomId } = params;
 
     if (!dataRoomId) return { status: 404 };
 
     const result = await getDataRoomContent(urlToId(dataRoomId));
-
+    console.log(result);
     return result;
 };
 
@@ -29,7 +35,7 @@ export const DataRoom = () => {
                 <div className="flex flex-col gap-2">
                     <h2 className="flex items-center gap-2 text-lg font-semibold">
                         Contents{' '}
-                        {result.locked ? (
+                        {/* {result.locked ? (
                             <>
                                 locked <Lock />
                             </>
@@ -37,11 +43,11 @@ export const DataRoom = () => {
                             <>
                                 unlocked <LockOpen />
                             </>
-                        )}
+                        )} */}
                     </h2>
-                    {result.files.length === 0 && <p className="italic">No files uploaded yet</p>}
+                    {/* {result.files.length === 0 && <p className="italic">No files uploaded yet</p>}
                     {result.files.map((file) => (
-                        <div className="flex items-center gap-2 rounded-lg bg-slate-100 p-4">
+                        <div key={file.id} className="flex items-center gap-2 rounded-lg bg-slate-100 p-4">
                             <File className="h-8 w-8" />
                             <div className="gap flex flex-col">
                                 <h3 className="flex items-center gap-2 font-semibold">File name: {file.name}</h3>
@@ -56,7 +62,7 @@ export const DataRoom = () => {
                                 </p>
                             </div>
                         </div>
-                    ))}
+                    ))} */}
                 </div>
             </div>
         </>
