@@ -1,24 +1,22 @@
 import {
-    getPublicKey,
     getTokenIdentity,
-    importPrivateKey,
     importPublicKey,
-    setTokenIdentity,
     setWebServerTokenIdentity,
     getFileUploadToken,
     verify,
     sign,
-    updateDataRoom
-} from '../utils/api';
-import { arrayBufferToBase64, base64ToArrayBuffer, subtleHash } from '../utils/helpers';
+    updateDataRoom,
+    exportWebServerIdentity
+} from '../../utils/api';
+import { arrayBufferToBase64, base64ToArrayBuffer, subtleHash } from '../../utils/helpers';
 
-const privateKey = `
------BEGIN EC PRIVATE KEY-----
-MHcCAQEEIBD4a3SjphAdFv2iyzuc7QH8B0R0B96nVqnvnX9mXvYloAoGCCqGSM49
-AwEHoUQDQgAEXbgaa/qogASdgc6Fer3yIA3YNeS0FLulPQm0KoiHwvbGFQcZgjKd
-fNTD+rJ06JEpzPQLts1/Ynfk/Ss2Yf6GCA==
------END EC PRIVATE KEY-----
-`;
+// const privateKey = `
+// -----BEGIN EC PRIVATE KEY-----
+// MHcCAQEEIBD4a3SjphAdFv2iyzuc7QH8B0R0B96nVqnvnX9mXvYloAoGCCqGSM49
+// AwEHoUQDQgAEXbgaa/qogASdgc6Fer3yIA3YNeS0FLulPQm0KoiHwvbGFQcZgjKd
+// fNTD+rJ06JEpzPQLts1/Ynfk/Ss2Yf6GCA==
+// -----END EC PRIVATE KEY-----
+// `;
 
 const testTxt = `
 Hello there!
@@ -96,18 +94,12 @@ const updateDR = async (dataRoomId: string, digestB64: string, webSvrPrivKey: an
 };
 
 export const loader = async () => {
-    // set backend identity
-    const backendKey = await setTokenIdentity();
-    console.log('backendKey', backendKey);
-
-    // create crypto keyPairs
-    const webServerKeyName = await importPrivateKey(privateKey);
-    console.log('webServerKeyName', webServerKeyName);
-    const webServerSpkiPublicKey = await getPublicKey(webServerKeyName.message);
-    console.log('webServerSpkiPublicKey', webServerSpkiPublicKey);
+    // export web servers private key
+    const webServerPrivateKey = await exportWebServerIdentity('pkcs8');
+    console.log('webServerPrivateKey', webServerPrivateKey);
 
     // set web server identity
-    const webServerKey = await setWebServerTokenIdentity(webServerSpkiPublicKey.message);
+    const webServerKey = await setWebServerTokenIdentity(webServerPrivateKey.message);
     console.log('webServerKey', webServerKey);
 
     // get token identity
@@ -122,7 +114,7 @@ export const loader = async () => {
 
     // ask the backend for a token
     const token = await getUploadToken(
-        'SMDp9MTRtdz1VW0T03QzIpJ1uWdMEMPSArjS+apRVytUDLtq1Hwql69BQC2l5JKoJI6WWKe8P4GXbfsiwYsQlw==',
+        '2qnXe81n4XVI60O9cKG7KjNN3O4m/x7zckI/GkU3lzjtc1YotEgKoTVy7707IEmJjkwP7fvkDbBarFejbx9fmQ==',
         digest,
         backendKeyName.message
     );
@@ -130,9 +122,9 @@ export const loader = async () => {
 
     // update the dataRoom with the new file
     const udr = await updateDR(
-        'SMDp9MTRtdz1VW0T03QzIpJ1uWdMEMPSArjS+apRVytUDLtq1Hwql69BQC2l5JKoJI6WWKe8P4GXbfsiwYsQlw==',
+        '2qnXe81n4XVI60O9cKG7KjNN3O4m/x7zckI/GkU3lzjtc1YotEgKoTVy7707IEmJjkwP7fvkDbBarFejbx9fmQ==',
         digest,
-        webServerKeyName
+        webServerKey
     );
     console.assert(udr, 'Error updating dataRoom with new file');
 

@@ -133,13 +133,13 @@ export const resetIdentities = async (input: SetIdentitiesInput): Promise<Transa
                 })
         );
 
-export const exportWebServerIdentity = async (input: ExportWebServerPrivateKeyInput): Promise<TransactionResult> =>
+export const exportWebServerIdentity = async (format?: string): Promise<TransactionResult> =>
     waitForConnection()
         .then(() =>
             secretariumHandler.request(
                 klaveContract,
                 'exportWebServerIdentity',
-                input,
+                { format },
                 `exportWebServerIdentity-${Math.random()}`
             )
         )
@@ -164,29 +164,6 @@ export const setTokenIdentity = async (token?: string): Promise<TransactionResul
                 'setTokenIdentity',
                 { token },
                 `setTokenIdentity-${Math.random()}`
-            )
-        )
-        .then(
-            (tx) =>
-                new Promise((resolve, reject) => {
-                    tx.onResult((result) => {
-                        resolve(result);
-                    });
-                    tx.onError((error) => {
-                        reject(error);
-                    });
-                    tx.send().catch(reject);
-                })
-        );
-
-export const setWebServerTokenIdentity = async (spkiPublicKey: string): Promise<TransactionResult> =>
-    waitForConnection()
-        .then(() =>
-            secretariumHandler.request(
-                klaveContract,
-                'setWebServerTokenIdentity',
-                { spkiPublicKey },
-                `setWebServerTokenIdentity-${Math.random()}`
             )
         )
         .then(
@@ -337,17 +314,17 @@ const rmPemDecorators = (pemFile: string, type: string) => {
     return pemFile;
 };
 
-export const importPrivateKey = async (pem: string): Promise<TransactionResult> =>
+export const setWebServerTokenIdentity = async (pem: string): Promise<TransactionResult> =>
     waitForConnection()
         .then(() => {
             const pemContents = rmPemDecorators(pem, 'EC PRIVATE');
             const importKeyInput = {
                 keyName: 'webServerPrivateKey',
                 key: {
-                    format: 'sec1',
+                    format: 'pkcs8',
                     keyData: pemContents,
                     algorithm: 'secp256r1',
-                    extractable: true,
+                    extractable: false,
                     usages: ['sign']
                 }
             };
@@ -371,6 +348,41 @@ export const importPrivateKey = async (pem: string): Promise<TransactionResult> 
                     tx.send().catch(reject);
                 })
         );
+
+// export const importPrivateKey = async (pem: string): Promise<TransactionResult> =>
+//     waitForConnection()
+//         .then(() => {
+//             const pemContents = rmPemDecorators(pem, 'EC PRIVATE');
+//             const importKeyInput = {
+//                 keyName: 'webServerPrivateKey',
+//                 key: {
+//                     format: 'sec1',
+//                     keyData: pemContents,
+//                     algorithm: 'secp256r1',
+//                     extractable: true,
+//                     usages: ['sign']
+//                 }
+//             };
+
+//             return secretariumHandler.request(
+//                 mock_web_server_klave_contract,
+//                 'importKey',
+//                 importKeyInput,
+//                 `importKey-${Math.random()}`
+//             );
+//         })
+//         .then(
+//             (tx) =>
+//                 new Promise((resolve, reject) => {
+//                     tx.onResult((result) => {
+//                         resolve(result);
+//                     });
+//                     tx.onError((error) => {
+//                         reject(error);
+//                     });
+//                     tx.send().catch(reject);
+//                 })
+//         );
 
 export const getPublicKey = async (keyName: string): Promise<TransactionResult> =>
     waitForConnection()
