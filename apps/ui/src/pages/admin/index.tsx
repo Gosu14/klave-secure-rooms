@@ -31,7 +31,7 @@ export const Admin = () => {
 
     const handleCreateDataRoom = async () => {
         await createDataRoom().catch((error) => {
-            console.log(error);
+            console.error(error);
             return error;
         });
         navigate('/admin/data-rooms');
