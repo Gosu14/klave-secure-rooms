@@ -1,9 +1,8 @@
 import { Helmet } from 'react-helmet-async';
 import { LoaderFunction, NavLink, redirect, useLoaderData } from 'react-router-dom';
 import { isConnected, listDataRooms } from '../../utils/api';
-import { idToUrl, urlToId } from '../../utils/helpers';
+import { idToUrl } from '../../utils/helpers';
 import { ListDataRoomsResult } from '../../utils/types';
-import { LockOpen, Lock, File } from 'lucide-react';
 
 export const loader: LoaderFunction = async () => {
     const isConnectedState = isConnected();
@@ -13,7 +12,7 @@ export const loader: LoaderFunction = async () => {
     }
 
     const { result } = await listDataRooms();
-
+    console.log('result', result);
     return {
         result
     };
@@ -32,7 +31,7 @@ export const DataRooms = () => {
                 <div className="flex flex-col gap-2">
                     {result.map((id) => (
                         <NavLink
-                            to={`/data-rooms/${idToUrl(id)}`}
+                            to={`/admin/data-rooms/${idToUrl(id)}`}
                             key={id}
                             className="flex flex-col gap-2 rounded-lg bg-slate-100 p-4 transition-colors hover:bg-slate-200"
                         >

@@ -4,6 +4,8 @@ import { getDataRoomContent, isConnected } from '../../utils/api';
 import { urlToId } from '../../utils/helpers';
 import { DataRoomContentResult } from '../../utils/types';
 import { LockOpen, Lock, File } from 'lucide-react';
+import { Dropzone } from "../../components/dropzone";
+import { useState } from "react";
 
 export const loader: LoaderFunction = async ({ params }) => {
     const isConnectedState = isConnected();
@@ -24,6 +26,7 @@ export const loader: LoaderFunction = async ({ params }) => {
 export const DataRoom = () => {
     const { dataRoomId } = useParams<{ dataRoomId: string }>();
     const { result } = useLoaderData() as DataRoomContentResult;
+    const [files, setFiles] = useState<string[]>([]);
 
     return (
         <>
@@ -32,10 +35,11 @@ export const DataRoom = () => {
             </Helmet>
             <div className="flex flex-col gap-4 px-12 py-4">
                 <h2 className="text-lg font-semibold">Data Room ID: {urlToId(dataRoomId ?? '').substring(0, 8)}</h2>
+                <Dropzone onChange={setFiles} className="h-48 w-full" />
                 <div className="flex flex-col gap-2">
                     <h2 className="flex items-center gap-2 text-lg font-semibold">
                         Contents{' '}
-                        {/* {result.locked ? (
+                        {result.locked ? (
                             <>
                                 locked <Lock />
                             </>
@@ -43,9 +47,9 @@ export const DataRoom = () => {
                             <>
                                 unlocked <LockOpen />
                             </>
-                        )} */}
+                        )}
                     </h2>
-                    {/* {result.files.length === 0 && <p className="italic">No files uploaded yet</p>}
+                    {result.files.length === 0 && <p className="italic">No files uploaded yet</p>}
                     {result.files.map((file) => (
                         <div key={file.id} className="flex items-center gap-2 rounded-lg bg-slate-100 p-4">
                             <File className="h-8 w-8" />
@@ -62,7 +66,7 @@ export const DataRoom = () => {
                                 </p>
                             </div>
                         </div>
-                    ))} */}
+                    ))}
                 </div>
             </div>
         </>
