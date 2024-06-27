@@ -10,14 +10,6 @@ import {
 } from '../../utils/api';
 import { arrayBufferToBase64, base64ToArrayBuffer, subtleHash } from '../../utils/helpers';
 
-// const privateKey = `
-// -----BEGIN EC PRIVATE KEY-----
-// MHcCAQEEIBD4a3SjphAdFv2iyzuc7QH8B0R0B96nVqnvnX9mXvYloAoGCCqGSM49
-// AwEHoUQDQgAEXbgaa/qogASdgc6Fer3yIA3YNeS0FLulPQm0KoiHwvbGFQcZgjKd
-// fNTD+rJ06JEpzPQLts1/Ynfk/Ss2Yf6GCA==
-// -----END EC PRIVATE KEY-----
-// `;
-
 const testTxt = `
 Hello there!
 `;
