@@ -14,7 +14,8 @@ import { CreateSuperAdmin, action as CreateSAdmin } from './pages/auth/create-su
 import { AdminLayout } from './layouts/admin-layout';
 import { Admin, loader as AdminLoader } from './pages/admin';
 import { Users, loader as UsersLoader } from './pages/admin/users';
-import { Keys } from './pages/admin/keys';
+import { Keys, loader as KeysLoader } from './pages/admin/keys';
+import { Test, loader as TestLoader } from './pages/admin/test';
 
 secretariumHandler.initialize();
 
@@ -75,14 +76,12 @@ const router = createBrowserRouter([
             {
                 path: 'data-rooms',
                 element: <DataRooms />,
-                loader: DataRoomsLoader,
-                children: [
-                    {
-                        path: ':dataRoomId',
-                        element: <DataRoom />,
-                        loader: DataRoomLoader
-                    }
-                ]
+                loader: DataRoomsLoader
+            },
+            {
+                path: 'data-rooms/:dataRoomId',
+                element: <DataRoom />,
+                loader: DataRoomLoader
             },
             {
                 path: 'users',
@@ -91,7 +90,13 @@ const router = createBrowserRouter([
             },
             {
                 path: 'keys',
-                element: <Keys />
+                element: <Keys />,
+                loader: KeysLoader
+            },
+            {
+                path: 'test',
+                element: <Test />,
+                loader: TestLoader
             }
         ]
     }

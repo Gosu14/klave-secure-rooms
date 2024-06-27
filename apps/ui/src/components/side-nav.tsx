@@ -1,7 +1,7 @@
 import secretariumHandler from '../utils/secretarium-handler';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Button } from '@klave-secure-rooms/ui-kit/ui';
-import { FolderKey, KeyRound, LogOut, Users } from 'lucide-react';
+import { FolderKey, KeyRound, LogOut, TestTube, Users } from 'lucide-react';
 
 export const SideNav = () => {
     const navigate = useNavigate();
@@ -50,6 +50,19 @@ export const SideNav = () => {
             >
                 <FolderKey />
                 Rooms
+            </NavLink>
+            <NavLink
+                to="/admin/test"
+                className={({ isActive }) =>
+                    `flex items-center gap-4 rounded-lg p-2 text-xl ${
+                        isActive
+                            ? 'bg-blue-200 text-blue-600'
+                            : 'transition-colors hover:bg-blue-100 hover:text-blue-500'
+                    }`
+                }
+            >
+                <TestTube />
+                Test
             </NavLink>
             <Button
                 onClick={() => secretariumHandler.disconnect().then(() => navigate('/auth'))}
