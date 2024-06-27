@@ -99,7 +99,9 @@ export const listUsers = async (): Promise<ListUserRequestsResult> =>
 
 export const approveUser = async (input: ApproveUserRequestInput): Promise<TransactionResult> =>
     waitForConnection()
-        .then(() => secretariumHandler.request(klaveContract, 'approveUser', input, `approveUser-${Math.random()}`))
+        .then(() =>
+            secretariumHandler.request(klaveContract, 'approveUserRequest', input, `approveUser-${Math.random()}`)
+        )
         .then(
             (tx) =>
                 new Promise((resolve, reject) => {

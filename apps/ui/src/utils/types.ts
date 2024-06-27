@@ -72,6 +72,7 @@ export type GetUserContentResult = {
         id: string;
         roles: DataRoomRole[];
     };
+    message?: string;
 };
 
 export type GetFileUploadTokenInput = {
