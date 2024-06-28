@@ -15,7 +15,7 @@ import { AdminLayout } from './layouts/admin-layout';
 import { Admin, loader as AdminLoader } from './pages/admin';
 import { Users, loader as UsersLoader } from './pages/admin/users';
 import { Keys, loader as KeysLoader } from './pages/admin/keys';
-import { Test, loader as TestLoader } from './pages/admin/test';
+// import { Test, loader as TestLoader } from './pages/admin/test';
 
 secretariumHandler.initialize();
 
@@ -93,11 +93,11 @@ const router = createBrowserRouter([
                 element: <Keys />,
                 loader: KeysLoader
             },
-            {
-                path: 'test',
-                element: <Test />,
-                loader: TestLoader
-            }
+            // {
+            //     path: 'test',
+            //     element: <Test />,
+            //     loader: TestLoader
+            // }
         ]
     }
 ]);

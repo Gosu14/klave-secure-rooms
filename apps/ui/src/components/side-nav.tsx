@@ -51,7 +51,7 @@ export const SideNav = () => {
                 <FolderKey />
                 Rooms
             </NavLink>
-            <NavLink
+            {/* <NavLink
                 to="/admin/test"
                 className={({ isActive }) =>
                     `flex items-center gap-4 rounded-lg p-2 text-xl ${
@@ -63,7 +63,7 @@ export const SideNav = () => {
             >
                 <TestTube />
                 Test
-            </NavLink>
+            </NavLink> */}
             <Button
                 onClick={() => secretariumHandler.disconnect().then(() => navigate('/auth'))}
                 variant="ghost"

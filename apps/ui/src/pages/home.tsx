@@ -24,7 +24,7 @@ export const loader = async () => {
 
     const user = await getUser();
     const dataRooms = await listDataRooms();
-
+    console.log(user, dataRooms);
     if (user.message === 'User not found') {
         return {
             dataRooms: dataRooms.result,
