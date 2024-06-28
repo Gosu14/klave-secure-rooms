@@ -1,7 +1,7 @@
 import {
     getPublicKeys,
     importPublicKey,
-    setWebServerTokenIdentity,
+    setStorageServerTokenIdentity,
     getFileUploadToken,
     verify,
     sign,
@@ -86,18 +86,18 @@ const updateDR = async (dataRoomId: string, digestB64: string, webSvrPrivKey: an
 };
 
 export const loader = async () => {
-    // export web servers private key
-    const webServerPrivateKey = await exportStorageServerPrivateKey('pkcs8');
-    console.log('webServerPrivateKey', webServerPrivateKey);
+    // create crypto keypairs
+    const storageServerPrivateKey = await exportStorageServerPrivateKey('pkcs8');
+    console.log('storageServerPrivateKey', storageServerPrivateKey);
 
-    // set web server identity
-    const webServerKey = await setWebServerTokenIdentity(webServerPrivateKey.message);
+    // set storage server identity
+    const webServerKey = await setStorageServerTokenIdentity(storageServerPrivateKey.message);
     console.log('webServerKey', webServerKey);
 
     // get token identity
     const pks = await getPublicKeys();
     console.log('tokenIdentity', pks);
-    const backendKeyName = await importPublicKey(pks.result.backendPublicKey);
+    const backendKeyName = await importPublicKey(pks.result.klaveServerPublicKey);
     console.log('backendKeyName', backendKeyName);
 
     // get file digest
@@ -106,7 +106,7 @@ export const loader = async () => {
 
     // ask the backend for a token
     const token = await getUploadToken(
-        '2qnXe81n4XVI60O9cKG7KjNN3O4m/x7zckI/GkU3lzjtc1YotEgKoTVy7707IEmJjkwP7fvkDbBarFejbx9fmQ==',
+        'KRYSQSrcpdqVZWKdwrjguSuPxsUTUCvwJAuLnWy2tX0WVHaYxQK7ywUzsaXQxNgQlHE57kkrP11aMleRcSxV4Q==',
         digest,
         backendKeyName.message
     );
@@ -114,7 +114,7 @@ export const loader = async () => {
 
     // update the dataRoom with the new file
     const udr = await updateDR(
-        '2qnXe81n4XVI60O9cKG7KjNN3O4m/x7zckI/GkU3lzjtc1YotEgKoTVy7707IEmJjkwP7fvkDbBarFejbx9fmQ==',
+        'KRYSQSrcpdqVZWKdwrjguSuPxsUTUCvwJAuLnWy2tX0WVHaYxQK7ywUzsaXQxNgQlHE57kkrP11aMleRcSxV4Q==',
         digest,
         webServerKey
     );

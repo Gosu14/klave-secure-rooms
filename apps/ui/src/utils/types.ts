@@ -18,8 +18,8 @@ export type TransactionResult = {
 export type TokenIdentityResult = {
     requestId: string;
     result: {
-        backendPublicKey: string;
-        webserverPublicKey: string;
+        klaveServerPublicKey: string;
+        storageServerPublicKey: string;
     };
     message?: string;
 };

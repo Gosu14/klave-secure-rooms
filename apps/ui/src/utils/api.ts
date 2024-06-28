@@ -311,12 +311,12 @@ const rmPemDecorators = (pemFile: string, type: string) => {
     return pemFile;
 };
 
-export const setWebServerTokenIdentity = async (pem: string): Promise<TransactionResult> =>
+export const setStorageServerTokenIdentity = async (pem: string): Promise<TransactionResult> =>
     waitForConnection()
         .then(() => {
             const pemContents = rmPemDecorators(pem, 'EC PRIVATE');
             const importKeyInput = {
-                keyName: 'webServerPrivateKey',
+                keyName: 'storageServerPrivateKey',
                 key: {
                     format: 'pkcs8',
                     keyData: pemContents,
@@ -414,7 +414,7 @@ export const importPublicKey = async (pem: string): Promise<TransactionResult> =
         .then(() => {
             const pemContents = rmPemDecorators(pem, 'PUBLIC');
             const importKeyInput = {
-                keyName: 'backendPublicKey',
+                keyName: 'klaveServerPublicKey',
                 key: {
                     format: 'spki',
                     keyData: pemContents,
