@@ -1,9 +1,9 @@
 import { Helmet } from 'react-helmet-async';
 import { createUser, getUser, isConnected, listDataRooms } from '../utils/api';
-import { redirect, useLoaderData, useRevalidator } from 'react-router-dom';
-import { ListDataRoomsResult } from '../utils/types';
+import { Link, redirect, useLoaderData, useRevalidator } from 'react-router-dom';
 import { Button } from '@klave-secure-rooms/ui-kit/ui';
 import { useState } from 'react';
+import { idToUrl } from '../utils/helpers';
 
 type DataRoomRole = {
     dataRoomId: string;
@@ -24,7 +24,6 @@ export const loader = async () => {
 
     const user = await getUser();
     const dataRooms = await listDataRooms();
-    console.log(user);
 
     if (user.message === 'User not found') {
         return {
@@ -52,7 +51,7 @@ export const Home = () => {
 
     const handleJoinAsMember = async (id: string) => {
         const result = await createUser({ dataRoomId: id, role: 'user' });
-        console.log('createUserResult',result);
+
         if (result.success) {
             revalidator.revalidate();
             setSuccessMsg(result.message);
@@ -92,9 +91,16 @@ export const Home = () => {
                                 >
                                     <h3 className="font-semibold">Data room ID: {id.substring(0, 8)}</h3>
                                     {userRoles.find((role) => role.dataRoomId === id) ? (
-                                        <p className="italic">
-                                            Your status is: {userRoles.find((role) => role.dataRoomId === id)?.role}
-                                        </p>
+                                        <div className="flex items-center gap-4">
+                                            <p className="italic">
+                                                Your status is: {userRoles.find((role) => role.dataRoomId === id)?.role}
+                                            </p>
+                                            {userRoles.find((role) => role.dataRoomId === id)?.role !== 'pending' ? (
+                                                <Link to={`/data-rooms/${idToUrl(id)}`}>
+                                                    <Button>View data room</Button>
+                                                </Link>
+                                            ) : null}
+                                        </div>
                                     ) : (
                                         <div className="flex gap-4">
                                             <Button onClick={() => handleJoinAsAdmin(id)}>Request admin access</Button>
