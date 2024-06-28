@@ -102,10 +102,10 @@ export type ApproveUserRequestInput = {
 };
 
 export type SetIdentitiesInput = {
-    resetBackend: boolean;
-    resetWebServer: boolean;
+    resetKlaveServer: boolean;
+    resetStorageServer: boolean;
 };
 
-export type ExportWebServerPrivateKeyInput = {
+export type ExportStorageServerPrivateKeyInput = {
     format: string;
 };

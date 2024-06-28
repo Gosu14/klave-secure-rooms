@@ -1,12 +1,12 @@
 import {
-    getTokenIdentity,
+    getPublicKeys,
     importPublicKey,
     setWebServerTokenIdentity,
     getFileUploadToken,
     verify,
     sign,
     updateDataRoom,
-    exportWebServerIdentity
+    exportStorageServerPrivateKey
 } from '../../utils/api';
 import { arrayBufferToBase64, base64ToArrayBuffer, subtleHash } from '../../utils/helpers';
 
@@ -87,7 +87,7 @@ const updateDR = async (dataRoomId: string, digestB64: string, webSvrPrivKey: an
 
 export const loader = async () => {
     // export web servers private key
-    const webServerPrivateKey = await exportWebServerIdentity('pkcs8');
+    const webServerPrivateKey = await exportStorageServerPrivateKey('pkcs8');
     console.log('webServerPrivateKey', webServerPrivateKey);
 
     // set web server identity
@@ -95,9 +95,9 @@ export const loader = async () => {
     console.log('webServerKey', webServerKey);
 
     // get token identity
-    const tokenIdentity = await getTokenIdentity();
-    console.log('tokenIdentity', tokenIdentity);
-    const backendKeyName = await importPublicKey(tokenIdentity.result.backendPublicKey);
+    const pks = await getPublicKeys();
+    console.log('tokenIdentity', pks);
+    const backendKeyName = await importPublicKey(pks.result.backendPublicKey);
     console.log('backendKeyName', backendKeyName);
 
     // get file digest

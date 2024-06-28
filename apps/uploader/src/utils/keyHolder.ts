@@ -13,12 +13,10 @@ const klave = new SCP({
 });
 
 export class KeyHolder {
-
     static idKey?: Key;
     static signKey?: CryptoKey;
     static roomKey?: CryptoKey;
     static async loadServerIdentity() {
-
         const keysPath = path.resolve(path.join(__dirname, 'keys'));
         await fs.mkdir(keysPath, { recursive: true });
 
@@ -37,18 +35,21 @@ export class KeyHolder {
             KeyHolder.idKey = await Key.importKey(idKey);
         }
 
-        klave.onError((e) => { console.error(e); });
+        klave.onError((e) => {
+            console.error(e);
+        });
         await klave.connect('wss://klave.secretarium.org', KeyHolder.idKey);
 
         const signKeyPath = path.resolve(keysPath, signKeyName);
-        const signKeyStat = await fs.stat(signKeyPath).catch(() => { return; });
+        const signKeyStat = await fs.stat(signKeyPath).catch(() => {
+            return;
+        });
         if (!signKeyStat?.isFile) {
             // throw new Error('The signing key must be a file');
-            const tx = klave.newTx(deploymentId, 'exportWebServerIdentity', undefined, { format: 'raw' });
+            const tx = klave.newTx(deploymentId, 'exportStorageServerPrivateKey', undefined, { format: 'raw' });
             const newSignKeyB64: string = await new Promise((resolve, reject) => {
                 tx.onResult((result) => {
-                    if (result.success)
-                        return resolve(result.message);
+                    if (result.success) return resolve(result.message);
                     reject();
                 });
                 tx.onError(() => {
@@ -59,19 +60,26 @@ export class KeyHolder {
             await fs.writeFile(signKeyPath, newSignKeyContent);
         }
         const signKeyContent = await fs.readFile(signKeyPath);
-        KeyHolder.signKey = await subtle.importKey('raw', signKeyContent, {
-            name: 'ECDH'
-        }, false, ['sign']);
+        KeyHolder.signKey = await subtle.importKey(
+            'raw',
+            signKeyContent,
+            {
+                name: 'ECDH'
+            },
+            false,
+            ['sign']
+        );
 
         const roomKeyPath = path.resolve(keysPath, roomKeyName);
-        const roomKeyStat = await fs.stat(roomKeyPath).catch(() => { return; });
+        const roomKeyStat = await fs.stat(roomKeyPath).catch(() => {
+            return;
+        });
         if (!roomKeyStat?.isFile) {
             // throw new Error('The signing key must be a file');
-            const tx = klave.newTx(deploymentId, 'getTokenIdentity');
+            const tx = klave.newTx(deploymentId, 'getPublicKeys');
             const newRoomKeyPEM: string = await new Promise((resolve, reject) => {
                 tx.onResult((result) => {
-                    if (result.success)
-                        return resolve(result.backendPublicKey);
+                    if (result.success) return resolve(result.backendPublicKey);
                     reject();
                 });
                 tx.onError(() => {
@@ -81,9 +89,15 @@ export class KeyHolder {
             await fs.writeFile(roomKeyPath, newRoomKeyPEM);
         }
         const roomKeyContent = await fs.readFile(roomKeyPath);
-        KeyHolder.roomKey = await subtle.importKey('spki', roomKeyContent, {
-            name: 'ECDH'
-        }, false, ['verify']);
+        KeyHolder.roomKey = await subtle.importKey(
+            'spki',
+            roomKeyContent,
+            {
+                name: 'ECDH'
+            },
+            false,
+            ['verify']
+        );
     }
 }
 

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { exportWebServerIdentity, isConnected, resetIdentities } from '../../utils/api';
+import { exportStorageServerPrivateKey, isConnected, resetIdentities } from '../../utils/api';
 import { Button } from '@klave-secure-rooms/ui-kit/ui';
 import { redirect } from 'react-router-dom';
 
@@ -11,7 +11,7 @@ export const loader = async () => {
         return redirect('/auth');
     }
 
-    const res = await exportWebServerIdentity('raw');
+    const res = await exportStorageServerPrivateKey('raw');
 
     console.log(res);
 
@@ -23,7 +23,7 @@ export const Keys = () => {
     const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
     const handleResetIdentities = async () => {
-        const result = await resetIdentities({ resetBackend: true, resetWebServer: true });
+        const result = await resetIdentities({ resetKlaveServer: true, resetStorageServer: true });
         console.log(result);
 
         if (result.success) {

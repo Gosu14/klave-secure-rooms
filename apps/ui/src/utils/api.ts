@@ -10,7 +10,6 @@ import {
     UserRequestInput,
     ApproveUserRequestInput,
     SetIdentitiesInput,
-    ExportWebServerPrivateKeyInput,
     GetUserContentResult,
     ListUserRequestsResult
 } from './types';
@@ -133,14 +132,14 @@ export const resetIdentities = async (input: SetIdentitiesInput): Promise<Transa
                 })
         );
 
-export const exportWebServerIdentity = async (format?: string): Promise<TransactionResult> =>
+export const exportStorageServerPrivateKey = async (format?: string): Promise<TransactionResult> =>
     waitForConnection()
         .then(() =>
             secretariumHandler.request(
                 klaveContract,
-                'exportWebServerIdentity',
+                'exportStorageServerPrivateKey',
                 { format },
-                `exportWebServerIdentity-${Math.random()}`
+                `exportStorageServerPrivateKey-${Math.random()}`
             )
         )
         .then(
@@ -220,11 +219,9 @@ export const updateDataRoom = async (input: UpdateDataRoomInput): Promise<Transa
                 })
         );
 
-export const getTokenIdentity = async (): Promise<TokenIdentityResult> =>
+export const getPublicKeys = async (): Promise<TokenIdentityResult> =>
     waitForConnection()
-        .then(() =>
-            secretariumHandler.request(klaveContract, 'getTokenIdentity', {}, `getTokenIdentity-${Math.random()}`)
-        )
+        .then(() => secretariumHandler.request(klaveContract, 'getPublicKeys', {}, `getPublicKeys-${Math.random()}`))
         .then(
             (tx) =>
                 new Promise((resolve, reject) => {
