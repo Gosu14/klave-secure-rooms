@@ -68,26 +68,28 @@ export function Dropzone({ onChange, className, fileExtension, ...props }: Dropz
         <Card
             className={`bg-muted hover:border-muted-foreground/50 border-2 border-dashed hover:cursor-pointer ${className}`}
             {...props}
+            onClick={handleButtonClick}
         >
             <CardContent
                 className="flex flex-col items-center justify-center space-y-2 px-2 py-4 text-xs"
                 onDragOver={handleDragOver}
                 onDrop={handleDrop}
             >
-                <div className="text-muted-foreground flex items-center justify-center">
+                <div className="text-muted-foreground flex items-center justify-center" >
                     <span className="text-lg font-medium">Drag Files to Upload or</span>
                     <Button
                         variant="ghost"
                         size="sm"
                         className="ml-auto flex h-8 space-x-2 px-0 pl-1 text-lg"
-                        onClick={handleButtonClick}
+                        
                     >
                         Click Here
                     </Button>
                     <input
                         ref={fileInputRef}
                         type="file"
-                        accept={`.${fileExtension}`} // Set accepted file type
+                        // accept={`.${fileExtension}`} // Set accepted file type
+                        accept={`.*`} // Set accepted file type
                         onChange={handleFileInputChange}
                         className="hidden"
                         multiple
