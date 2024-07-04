@@ -75,7 +75,7 @@ export const SignIn = () => {
                     />
                     <div className="flex justify-between gap-4">
                         <Link to="/auth">
-                            <Button className="w-full" variant="outline">
+                            <Button type='button' className="w-full" variant="outline">
                                 <ChevronLeft className="mr-2 h-4 w-4" />
                                 Go back
                             </Button>
