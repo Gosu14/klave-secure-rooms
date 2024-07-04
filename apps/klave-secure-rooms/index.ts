@@ -12,7 +12,7 @@ import { UserRequest } from "./dataroom/userRequest";
 /**
  * @transaction
  */
-export function createSuperAdmin(unused: string): void {
+export function createSuperAdmin(): void {
     let users = Users.load();
     if (users.users.length > 0) {
         error("Super admin already exists");
@@ -42,7 +42,7 @@ export function createUserRequest(input: UserRequestInput): void {
 /**
  * @query
  */
-export function listUserRequests(unused: string): void {
+export function listUserRequests(): void {
     let user = User.load(Context.get('sender'));
     if (!user)
     {
@@ -176,7 +176,7 @@ export function exportStorageServerPrivateKey(input: ExportStorageServerPrivateK
  * - role: string, "admin" or "user" - so far unused
  * @returns success boolean
  */
-export function getPublicKeys(unused: string): void {
+export function getPublicKeys(): void {
     let keys = Keys.load();
     keys.list();
 }
@@ -280,7 +280,7 @@ export function getFileUploadToken(input: GetFileUploadToken): void {
 /**
  * @query
  */
-export function listDataRooms(unused: string): void {
+export function listDataRooms(): void {
     let dataRooms = DataRooms.load();
     dataRooms.list();
 }
@@ -300,7 +300,7 @@ export function getDataRoomContent(input: DataRoomIDInput): void {
 /**
  * @transaction
  */
-export function clearAll(unused: string): void {
+export function clearAll(): void {
     let user = User.load(Context.get('sender'));
     if (!user)
     {
@@ -330,7 +330,7 @@ export function clearAll(unused: string): void {
 /**
  * @query
  */
-export function getUserContent(unused: string): void {
+export function getUserContent(): void {
     let user = User.load(Context.get('sender'));
     if (!user)
     {
