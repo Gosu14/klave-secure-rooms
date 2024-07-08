@@ -99,8 +99,8 @@ export class DataRoom {
 
         let file = new File(input.name,
             input.digestB64,
-            input.key,
             input.type,
+            input.key,
             input.tokenB64);
 
         //Check signature is valid
