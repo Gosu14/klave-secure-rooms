@@ -82,7 +82,7 @@ export type GetFileUploadTokenInput = {
 
 export type UpdateDataRoomInput = {
     dataRoomId: string;
-    operation: string;
+    operation: 'addFile' | 'removeFile' | 'lock';
     file: {
         name: string;
         digestB64: string;

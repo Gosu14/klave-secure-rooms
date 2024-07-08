@@ -1,16 +1,25 @@
 import React, { useRef, useState } from 'react';
 import { Button, Card, CardContent } from '@klave-secure-rooms/ui-kit/ui';
+import { prepareFile } from '../utils/fileTools';
+import { getFileUploadToken, updateDataRoom } from '../utils/api';
+import { urlToId } from '../utils/helpers';
+import { useParams } from 'react-router-dom';
+import { Utils } from '@secretarium/connector';
 
 // Define the props expected by the Dropzone component
 interface DropzoneProps {
     onChange: React.Dispatch<React.SetStateAction<string[]>>;
+    onCompleted?: () => void;
     className?: string;
     fileExtension?: string;
 }
 
+const workPromises: Array<Promise<any>> = [];
+
 // Create the Dropzone component receiving props
-export function Dropzone({ onChange, className, fileExtension, ...props }: DropzoneProps) {
+export function Dropzone({ onChange, onCompleted, className, fileExtension, ...props }: DropzoneProps) {
     // Initialize state variables using the useState hook
+    const { dataRoomId } = useParams<{ dataRoomId: string }>();
     const fileInputRef = useRef<HTMLInputElement | null>(null); // Reference to file input element
     const [fileInfo, setFileInfo] = useState<string | null>(null); // Information about the uploaded file
     const [error, setError] = useState<string | null>(null); // Error message state
@@ -39,22 +48,51 @@ export function Dropzone({ onChange, className, fileExtension, ...props }: Dropz
 
     // Function to handle processing of uploaded files
     const handleFiles = (files: FileList) => {
-        const uploadedFile = files[0];
 
-        // Check file extension
-        if (fileExtension && !uploadedFile.name.endsWith(`.${fileExtension}`)) {
-            setError(`Invalid file type. Expected: .${fileExtension}`);
+        if (!fileInputRef.current)
             return;
-        }
 
-        const fileSizeInKB = Math.round(uploadedFile.size / 1024); // Convert to KB
+        Array.from(files).forEach((file) => {
+            workPromises.push((async () => {
+                const { encryptedBlob, digest, key } = await prepareFile(file);
 
-        const fileList = Array.from(files).map((file) => URL.createObjectURL(file));
-        onChange((prevFiles) => [...prevFiles, ...fileList]);
+                if (!encryptedBlob || !key || !digest)
+                    return Promise.reject('Error preparing file for upload');
 
-        // Display file information
-        setFileInfo(`Uploaded file: ${uploadedFile.name} (${fileSizeInKB} KB)`);
-        setError(null); // Reset error state
+                const uploadToken = await getFileUploadToken({
+                    dataRoomId: urlToId(dataRoomId ?? ''),
+                    digestB64: digest,
+                })
+
+                const data = new FormData();
+                data.append('token', uploadToken.result.tokenB64)
+                data.append('file', encryptedBlob)
+
+                const rawResponse = await fetch('/api/file', {
+                    method: 'POST',
+                    body: data,
+                })
+                const response = await rawResponse.json();
+                
+                await updateDataRoom({
+                    dataRoomId: urlToId(dataRoomId ?? ''),
+                    operation: 'addFile',
+                    file: {
+                        digestB64: digest,
+                        name: file.name,
+                        type: file.type,
+                        key: key,
+                        tokenB64: response.uploadToken
+                    }
+                })
+
+                if (fileInputRef.current)
+                    fileInputRef.current.value = '';
+
+                onCompleted?.();
+
+            })());
+        });
     };
 
     // Function to simulate a click on the file input element
@@ -81,7 +119,7 @@ export function Dropzone({ onChange, className, fileExtension, ...props }: Dropz
                         variant="ghost"
                         size="sm"
                         className="ml-auto flex h-8 space-x-2 px-0 pl-1 text-lg"
-                        
+
                     >
                         Click Here
                     </Button>

@@ -6,6 +6,7 @@ import { DataRoomFile } from '../../utils/types';
 import { LockOpen, Lock, File } from 'lucide-react';
 import { Dropzone } from '../../components/dropzone';
 import { useState } from 'react';
+import { loadFile } from '../../utils/fileTools';
 
 type RoomLoaderData = {
     userRole: string;
@@ -41,6 +42,24 @@ export const DataRoom = () => {
     const { userRole, dataRoom } = useLoaderData() as RoomLoaderData;
     const [files, setFiles] = useState<string[]>([]);
 
+    const handleDownload = async (file: DataRoomFile) => {
+        const doneFile = await loadFile({
+            name: file.name,
+            type: file.type,
+            size: -1,
+            key: file.key,
+            digest: file.digestB64,
+            token: file.tokenB64,
+        }, false);
+
+        const link = document.createElement('a');
+
+        link.download = file.name;
+        link.href = doneFile.downloadUrl ?? '#';
+        link.target = '_blank';
+        link.click();
+    };
+
     return (
         <>
             <Helmet>
@@ -69,13 +88,12 @@ export const DataRoom = () => {
                             <div className="gap flex flex-col">
                                 <h3 className="flex items-center gap-2 font-semibold">File name: {file.name}</h3>
                                 <p className="text-sm">
-                                    <a
-                                        href={`data:${file.type};base64,${file.tokenB64}`}
-                                        download={file.name}
+                                    <button
+                                        onClick={() => { handleDownload(file) }}
                                         className="hover:underline"
                                     >
                                         Download file
-                                    </a>
+                                    </button>
                                 </p>
                             </div>
                         </div>
