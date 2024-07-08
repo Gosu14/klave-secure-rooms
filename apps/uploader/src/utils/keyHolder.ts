@@ -3,6 +3,7 @@ import path from 'node:path';
 import { subtle } from 'node:crypto';
 import { ClearKeyPair, Key, SCP, Utils } from '@secretarium/connector';
 
+const keyFolder = process.env.NX_APP_KEY_FOLDER ?? 'keys';
 const idKeyName = process.env.IKEY ?? 'i.key.pem';
 const signKeyName = process.env.SKEY ?? 's.key.pem';
 const roomKeyName = process.env.RKEY ?? 'r.key.pem';
@@ -18,7 +19,7 @@ export class KeyHolder {
     static signKey?: CryptoKey;
     static roomKey?: CryptoKey;
     static async loadServerIdentity() {
-        const keysPath = path.resolve(path.join(__dirname, 'keys'));
+        const keysPath = path.resolve(path.join(__dirname, keyFolder));
         fs.mkdirSync(keysPath, { recursive: true });
         const idKeyPath = path.resolve(keysPath, idKeyName);
         if (!fs.existsSync(idKeyPath)) {
@@ -35,6 +36,7 @@ export class KeyHolder {
         klave.onError((e) => {
             console.error(e);
         });
+        
         await klave.connect(secretariumEndpoint, KeyHolder.idKey);
 
         await new Promise<void>((gresolve, greject) => {
@@ -47,8 +49,24 @@ export class KeyHolder {
                 const tx = klave.newTx(deploymentId, 'getUserContent', undefined, {});
                 const userContent: any = await new Promise((resolve, reject) => {
                     tx.onResult((result) => {
-                        if (result.result) return resolve(result.result);
-                        reject();
+                        if (result.result)
+                            return resolve(result.result);
+                        if (result.message === 'User not found'){
+                            const txcu = klave.newTx(deploymentId, 'createUserRequest', undefined, {
+                                dataRoomId: 'super',
+                                role: 'admin'
+                            });
+                            txcu.onResult(() => {
+                                return setTimeout(blockUntilAdmin, 5000);
+                            });
+                            txcu.onError((error) => {
+                                console.error('Could not create user', error)
+                                reject();
+                            });
+                            txcu.send();
+                        }
+                        else
+                        return setTimeout(blockUntilAdmin, 5000);
                     });
                     tx.onError((error) => {
                         console.error('User info could not be fetched', error)
