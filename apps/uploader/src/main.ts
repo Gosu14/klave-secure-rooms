@@ -2,6 +2,7 @@
 import Fastify from 'fastify';
 import rateLimiter from '@fastify/rate-limit';
 import helmet from '@fastify/helmet';
+import cors from '@fastify/cors';
 import multipart from '@fastify/multipart';
 import sensible from '@fastify/sensible';
 import websocket from '@fastify/websocket';
@@ -37,6 +38,9 @@ const port = process.env.PORT ? Number(process.env.PORT) : 3000;
         timeWindow: '1 minute'
     });
     await server.register(helmet);
+    await server.register(cors, {
+        origin: '*',
+    });
     await server.register(sensible);
     await server.register(multipart);
     await server.register(websocket);
