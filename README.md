@@ -1,12 +1,15 @@
-# KlaveSecureRooms
+<a href="https://klave.com/">
+  <img alt="Klave - Secure Data Rooms" src="https://klave.com/images/marketplace/secure-data-rooms.svg">
+  <h1 align="center">Secure Data Rooms</h1>
+</a>
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+<p align="center">
+The secure data room app leverages on Klave's confidential computing to allow you to encrypt files and collaborate with selected users.
+</p>
 
-
+![Wasm](https://img.shields.io/badge/Webassembly-5E4EE3?style=for-the-badge&labelColor=white&logo=webassembly&logoColor=5E4EE3) ![AssemblyScript](https://img.shields.io/badge/Assemblyscript-3578C7?style=for-the-badge&labelColor=white&logo=assemblyscript&logoColor=3578C7)
 
 ## Description
-
-The secure data room app leverages on Klave's confidential computing to allow you to encrypt files and collaborate with selected users.
 
 This contract implements an API that provides the following functions:
 
