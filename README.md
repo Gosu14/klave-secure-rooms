@@ -39,23 +39,27 @@ Retrieve the address of your honest application after deployment on klave websit
 ## Build UI and run it locally
 
 Change the .env file in apps/ui with the following
-  VITE_APP_SECRETARIUM_GATEWAYS="SDR#Secure data room#wss://klave-prod.secretarium.org"
-  VITE_APP_KLAVE_CONTRACT="address of your deployed klave contract"
+
+`VITE_APP_SECRETARIUM_GATEWAYS="SDR#Secure data room#wss://klave-prod.secretarium.org"`
+
+`VITE_APP_KLAVE_CONTRACT="address of your deployed klave contract"`
+
   
 Run `npx nx build ui` to build the application. The build artifacts are stored in the output directory (e.g. `dist/` or `build/`), ready to be deployed.
+
 Run `npx nx build ui` to deploy the UI locally.
 
 ## Build Storage server and run it locally
 
 Change the .env file in apps/uploader with the following
-  VITE_APP_SECRETARIUM_GATEWAYS="SDR#Secure data room#wss://klave-prod.secretarium.org"
-  VITE_APP_KLAVE_CONTRACT="address of your deployed klave contract"
+
+`VITE_APP_SECRETARIUM_GATEWAYS="SDR#Secure data room#wss://klave-prod.secretarium.org"`
+
+`VITE_APP_KLAVE_CONTRACT="address of your deployed klave contract"`
   
 Run `npx nx build uploader` to build the application. The build artifacts are stored in the output directory (e.g. `dist/` or `build/`), ready to be deployed.
+
 Run `npx nx server uploader` to run the storage server locally.
-
-
-Targets can be defined in the `package.json` or `projects.json`. Learn more [in the docs](https://nx.dev/features/run-tasks).
 
 
 ## Authors
