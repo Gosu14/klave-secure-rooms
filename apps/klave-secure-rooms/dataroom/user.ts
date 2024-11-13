@@ -33,7 +33,7 @@ export class User {
             this.id = id;
         }
         else {
-            this.id = b64encode(Crypto.Utils.convertToUint8Array(Crypto.getRandomValues(64)));
+            this.id = b64encode(Crypto.getRandomValues(64)!);
         }
         this.roles = new Array<DataRoomRole>();
         this.roles.push(role);

@@ -14,7 +14,7 @@ export class File {
     tokenB64: string;
 
     constructor(name: string, digestB64: string, type: string, key: string, tokenB64: string) {
-        this.id = b64encode(Crypto.Utils.convertToUint8Array(Crypto.getRandomValues(64)));
+        this.id = b64encode(Crypto.getRandomValues(64)!);
         this.name = name;
         this.digestB64 = digestB64;
         this.type = type;
@@ -72,7 +72,7 @@ export class File {
             error("Issue retrieving the key" + storageServer_private_key);
             return false;
         }
-        let verified = storageServer_pkey.verify(b64encode(token_body), Crypto.Utils.convertToU8Array(token_signature));
+        let verified = storageServer_pkey.verify(token_body.buffer, token_signature.buffer);
         if(!verified) {
 			error("file upload token signature is invalid: " + b64encode(token_signature) + ", " + b64encode(token_body));
 			return false;
@@ -93,10 +93,15 @@ export class File {
             return new Uint8Array(0);
         }
 
-        let token_signature = klaveServer_signing_key.sign(b64encode(token_body));
+        let token_signature = klaveServer_signing_key.sign(token_body.buffer);
+        if (!token_signature || token_signature.data === null || token_signature.data as ArrayBuffer === null) {
+            error("Issue with signing using" + klaveServer_private_key);
+            return new Uint8Array(0);
+        };
+
         let token = new Uint8Array(40 + 64);
         token.set(token_body, 0);
-        token.set(Crypto.Utils.convertToUint8Array(token_signature), 40);
+        token.set(Uint8Array.wrap(token_signature.data!), 40);
         return token;
     }
 }

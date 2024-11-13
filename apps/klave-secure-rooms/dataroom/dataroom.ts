@@ -34,7 +34,7 @@ export class DataRoom {
             this.id = id;
         }
         else {
-            this.id = b64encode(Crypto.Utils.convertToUint8Array(Crypto.getRandomValues(64)));
+            this.id = b64encode(Crypto.getRandomValues(64)!);
         }
 
         this.files = new Array<string>();

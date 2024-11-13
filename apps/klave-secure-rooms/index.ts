@@ -253,7 +253,6 @@ export function updateDataRoom(input: UpdateDataRoomInput): void {
     dataRoom.save();
 }
 
-
 /**
  * @query
  */

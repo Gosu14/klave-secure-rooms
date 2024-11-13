@@ -45,7 +45,7 @@
   "devDependencies": {
     "@babel/core": "^7.24.7",
     "@babel/preset-react": "^7.24.7",
-    "@klave/sdk": "0.12.0",
+    "@klave/sdk": "0.13.0",
     "@nx/eslint": "19.4.0",
     "@nx/eslint-plugin": "19.4.0",
     "@nx/jest": "19.4.0",

@@ -2,6 +2,8 @@ import { Context, Ledger, Notifier, JSON, Crypto } from "@klave/sdk";
 import { success, error } from "../klave/types";
 import { KeysList, TokenIdentityOutput } from "./outputs/types";
 import { encode as b64encode } from 'as-base64/assembly';
+import { KeyECC } from "@klave/sdk/assembly/crypto";
+import { SubtleCrypto } from "@klave/sdk/assembly/crypto/crypto_subtle";
 
 const KeysTable = "KeysTable";
 
@@ -48,12 +50,12 @@ export class Keys {
      * @param keyInput The details (algorithm, extractable) of the key to add.
      */
     generateKlaveServerPrivateKey(): boolean {
-        let key = Crypto.ECDSA.generateKey(this.klaveServer_private_key, "secp256r1", true);
-        if (key === null) {
+        let key = Crypto.ECDSA.generateKey(this.klaveServer_private_key);
+        if (key === null || key.data === null) {
             success(`KlaveServer private key could not be created.`);
             return false;
         }
-        this.klaveServer_private_key = key.name;
+        this.klaveServer_private_key = (key.data as KeyECC).name;
         return true;
     }
 
@@ -63,12 +65,12 @@ export class Keys {
      * @param keyInput The details (algorithm, extractable) of the key to add.
      */
     generateStorageServerPrivateKey(): boolean {
-        let key = Crypto.ECDSA.generateKey(this.storageServer_private_key, "secp256r1", true);
-        if (key === null) {
+        let key = Crypto.ECDSA.generateKey(this.storageServer_private_key);
+        if (key === null || key.data === null) {
             success(`KlaveServer private key could not be created.`);
             return false;
         }
-        this.storageServer_private_key = key.name;
+        this.storageServer_private_key = (key.data as KeyECC).name;
         return true;
     }
 
@@ -88,8 +90,22 @@ export class Keys {
             error("Issue retrieving the key: " + this.storageServer_private_key);
             return false;
         }
-        let storageServer_format = Crypto.ECDSA.exportKey(storageServer_key.name, format);
-        success(b64encode(Crypto.Utils.convertToUint8Array(storageServer_format)));
+        //let storageServer_format = Crypto.ECDSA.exportKey(storageServer_key.name, format);
+        let cryptoKey = SubtleCrypto.loadKey(this.storageServer_private_key);
+        if (!cryptoKey || cryptoKey.data === null) {
+            error("Issue loading the key: " + this.storageServer_private_key);
+            return false;
+        }
+        let storageServer_format = SubtleCrypto.exportKey(format, cryptoKey.data);
+        if (!storageServer_format || storageServer_format.data === null) {
+            error("Issue exporting the key: " + this.storageServer_private_key);
+            return false;
+        }
+        // success(b64encode(Crypto.Utils.convertToUint8Array(storageServer_format)));
+        let arrayBuffer = storageServer_format.data as ArrayBuffer;
+
+        success(String.UTF8.decode(arrayBuffer));
+        //success(arrayBuffer.toString());
         return true;
     }
 
@@ -120,14 +136,14 @@ export class Keys {
             error("Issue retrieving the key: " + this.klaveServer_private_key);
             return;
         }
-        let klaveServer_spki_pem = klaveServer_key.getPublicKey("spki").getPem();
+        let klaveServer_spki_pem = klaveServer_key.getPublicKey().getPem();
 
         let storageServer_key = Crypto.ECDSA.getKey(this.storageServer_private_key);
         if (!storageServer_key) {
             error("Issue retrieving the key: " + this.storageServer_private_key);
             return;
         }
-        let storageServer_spki_pem = storageServer_key.getPublicKey("spki").getPem();
+        let storageServer_spki_pem = storageServer_key.getPublicKey().getPem();
 
         let keysList = new KeysList(klaveServer_spki_pem, storageServer_spki_pem);
         Notifier.sendJson<TokenIdentityOutput>({

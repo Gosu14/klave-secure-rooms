@@ -18,7 +18,7 @@ export class UserRequest {
     role: string;
 
     constructor(dataRoomId: string, role: string) {
-        this.id = b64encode(Crypto.Utils.convertToUint8Array(Crypto.getRandomValues(64)));
+        this.id = b64encode(Crypto.getRandomValues(64)!);
         this.userId = Context.get('sender');
         this.dataRoomId = dataRoomId;
         this.role = role;
