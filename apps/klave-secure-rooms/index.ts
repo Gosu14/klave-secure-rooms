@@ -10,6 +10,13 @@ import { UserRequests } from "./dataroom/userRequests";
 import { UserRequest } from "./dataroom/userRequest";
 
 /**
+ * @query
+ */
+export function ping(): void {
+    success(`PONG`);
+}
+
+/**
  * @transaction
  */
 export function createSuperAdmin(): void {
